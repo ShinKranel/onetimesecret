@@ -2,8 +2,8 @@ from pydantic import BaseModel, Field
 
 
 class CreateSecret(BaseModel):
-    secret: str
-    code_phrase: str
+    message: str
+    secret_key: str
 
 
 class ReadSecret(BaseModel):
