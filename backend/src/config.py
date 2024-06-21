@@ -11,6 +11,8 @@ class Settings(BaseSettings):
     DB_USER: str
     DB_PASS: str
 
+    SECRET_LINK_DEV: str
+
     @property
     def DATABASE_URL_ASYNC(self):
         # postgres+asyncpg//user:pass@host:port/name
