@@ -5,26 +5,23 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.src.db import get_async_session
 from backend.src.secrets.models import Secret
-from backend.src.secrets.schemas import CreateSecret, ReadSecret
+from backend.src.secrets.schemas import CreateSecret, ReadSecret, CheckSecret
+from backend.src.secrets.utils import get_secret_link
 
 router = APIRouter()
 
 
-@router.get("/secrets")
-async def read_secrets(session: AsyncSession = Depends(get_async_session)):
-    query = select(Secret)
-    result = await session.execute(query)
-    return result.scalars().all()
-
-
-@router.get("/secrets/{secret_id}", response_model=ReadSecret)
-async def read_secrets(
+@router.post("/secrets/{secret_id}", response_model=ReadSecret)
+async def read_secret(
         secret_id: UUID4,
+        check_secret: CheckSecret,
         session: AsyncSession = Depends(get_async_session)
 ):
     secret = await session.get(Secret, secret_id)
     if not secret:
         raise HTTPException(status_code=404, detail="Secret not found")
+    if secret.secret_key != check_secret.secret_key:
+        raise HTTPException(status_code=400, detail="Wrong secret key")
     return secret
 
 
@@ -33,7 +30,21 @@ async def create_secret(
         new_secret: CreateSecret,
         session: AsyncSession = Depends(get_async_session)
 ):
-    stmt = insert(Secret).values(**new_secret.model_dump())
-    await session.execute(stmt)
+    secret = Secret(**new_secret.model_dump())
+    session.add(secret)
     await session.commit()
-    return {"status": "ok"}
+    await session.refresh(secret)
+    return {"Link to secret": get_secret_link(secret.id)}
+
+
+@router.delete("/secrets/{secret_id}/burn")
+async def delete_secret(
+        secret_id: UUID4,
+        session: AsyncSession = Depends(get_async_session)
+):
+    secret = await session.get(Secret, secret_id)
+    if not secret:
+        raise HTTPException(status_code=404, detail="Secret not found")
+    await session.delete(secret)
+    await session.commit()
+    return {"status": "Secret burn in flames"}
