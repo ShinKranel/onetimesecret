@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import UUID4
-from sqlalchemy import insert, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.src.db import get_async_session
@@ -17,11 +16,20 @@ async def read_secret(
         check_secret: CheckSecret,
         session: AsyncSession = Depends(get_async_session)
 ):
+    """
+    READ the secret message, after which it will be deleted.
+    """
+    # read secret message
     secret = await session.get(Secret, secret_id)
     if not secret:
         raise HTTPException(status_code=404, detail="Secret not found")
     if secret.secret_key != check_secret.secret_key:
         raise HTTPException(status_code=400, detail="Wrong secret key")
+
+    # delete after reading
+    await session.delete(secret)
+    await session.commit()
+
     return secret
 
 
@@ -30,6 +38,9 @@ async def create_secret(
         new_secret: CreateSecret,
         session: AsyncSession = Depends(get_async_session)
 ):
+    """
+    CREATE the secret message and return a secret link.
+    """
     secret = Secret(**new_secret.model_dump())
     session.add(secret)
     await session.commit()
@@ -42,6 +53,9 @@ async def delete_secret(
         secret_id: UUID4,
         session: AsyncSession = Depends(get_async_session)
 ):
+    """
+        DELETE the secret message, before it is read.
+    """
     secret = await session.get(Secret, secret_id)
     if not secret:
         raise HTTPException(status_code=404, detail="Secret not found")
