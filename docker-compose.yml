@@ -1,0 +1,33 @@
+services:
+  db:
+    image: postgres:16
+    restart: always
+    container_name: db_onetimesecret
+    command: -p 1221
+    expose:
+      - 5433:1221
+
+    env_file:
+      - .env-non-dev
+
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    container_name: pgadmin4_onetimesecret
+    ports:
+      - "5051:80"
+    env_file:
+      - .env-non-dev
+
+  app:
+    build:
+      context: .
+    restart: always
+    container_name: onetimesecret
+    command: ["/onetimesecret/docker/app.sh"]
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+    env_file:
+      .env-non-dev

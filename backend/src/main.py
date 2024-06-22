@@ -1,6 +1,6 @@
 import uvicorn
 from fastapi import FastAPI
-from src.secrets.router import router as secret_router
+from backend.src.secrets.router import router as secret_router
 
 app = FastAPI(
     project_name="One Time Secret"

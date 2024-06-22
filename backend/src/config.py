@@ -13,6 +13,13 @@ class Settings(BaseSettings):
 
     SECRET_LINK_DEV: str
 
+    POSTGRES_DB: str
+    POSTGRES_USER: str
+    POSTGRES_PASSWORD: str
+
+    PGADMIN_DEFAULT_EMAIL: str
+    PGADMIN_DEFAULT_PASSWORD: str
+
     @property
     def DATABASE_URL_ASYNC(self):
         # postgres+asyncpg//user:pass@host:port/name
