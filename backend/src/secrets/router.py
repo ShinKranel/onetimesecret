@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from backend.src.db import get_async_session
 from backend.src.secrets.models import Secret
 from backend.src.secrets.schemas import CreateSecret, ReadSecret, CheckSecret
+from backend.src.secrets.services import delete_expires_secrets
 from backend.src.secrets.utils import get_secret_link
 
 router = APIRouter()
@@ -19,6 +20,8 @@ async def read_secret(
     """
     READ the secret message, after which it will be deleted.
     """
+    # TODO: it's a bad strategy to delete expires secrets in every get request. Remake.
+    await delete_expires_secrets()
     # read secret message
     secret = await session.get(Secret, secret_id)
     if not secret:
