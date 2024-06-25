@@ -1,7 +1,7 @@
 ## How to use
 ### Run with docker
 Make sure that you have [docker](https://www.docker.com/get-started/) installed.
-1. Use command `docker compose up`
+1. Use this command in your "projects" directory `git clone https://github.com/ShinKranel/onetimesecret.git`
 2. Rename `.env-example` file to `.env`.
 3. Rename `.env-non-dev-example` file to `.env-non-dev`.
 4. In the `.env` file, change the values of the `DB_NAME`, `DB_USER`, `DB_PASS` variables to your db data.
