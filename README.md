@@ -18,11 +18,12 @@ Requirements: \
 PostgreSQL \
 pgadmin4 - if you want :)
 
-1. Use this command in your "projects" directory `git clone https://github.com/ShinKranel/onetimesecret.git`
-2. Rename `.env-example` file to `.env`.
-2. In the `.env` file, change the values of the `DB_NAME`, `DB_USER`, `DB_PASS` variables to your db data.
-3. Choose interpreter or make it with inside project. 
-4. Execute the `pip install -r requirements.txt` command in the terminal.
+1. Use command `docker compose up`
+2. Use this command in your "projects" directory `git clone https://github.com/ShinKranel/onetimesecret.git`
+3. Rename `.env-example` file to `.env`.
+4. In the `.env` file, change the values of the `DB_NAME`, `DB_USER`, `DB_PASS` variables to your db data.
+5. Choose interpreter or make it with inside project. 
+6. Execute the `pip install -r requirements.txt` command in the terminal.
 
 API - `127.0.0.1:8000/docs`\
 pgadmin4 - `127.0.0.1:5050/`
